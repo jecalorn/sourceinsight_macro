@@ -101,6 +101,91 @@ macro AutoExpand()
         SetBufIns(hwnd,ln+1,sel.ichFirst)
         return
     }
+    else if ((wordinfo.szWord == "pt") || (wordinfo.szWord == "path"))
+    {
+        DelBufLine(hbuf, ln)
+        InsBufLine(hbuf, ln, GetBufName(hbuf))
+    }
+    else if ((wordinfo.szWord == "fn") || (wordinfo.szWord == "filename"))
+    {
+        DelBufLine(hbuf, ln)
+        InsBufLine(hbuf, ln, GetFileName(GetBufName(hbuf)))
+    }
+    else if ((wordinfo.szWord == "li") || (wordinfo.szWord == "line"))
+    {
+        DelBufLine(hbuf, ln)
+        input = ask("input")
+                len = strlen(input)
+                      str_len = 80 - len
+                                str_len = str_len - 18
+                                          str = ""
+                                                while (str_len > 1)
+        {
+            str = str # "-"
+                  str_len = str_len - 1
+        }
+
+//      Insert_Line SetBufSelText ( hbuf, "/*--------------" # input # str # "*/")
+
+        InsBufLine(hbuf, ln, "/*--------------" # input # str # "*/")
+    }
+    else if ((wordinfo.szWord == "num") || (wordinfo.szWord == "number"))
+    {
+        direct = ask("0-- horizon  1--vertical")
+                 total_number = ask("total_number")
+                                start_number = ask("start_number")
+                                               offset_number = ask("offset_number")
+                                                       DelBufLine(hbuf, ln)
+                                                       if (direct == 0)
+        {
+            buff = ""
+                   buff = start_number
+                          i = 1
+                              while (i < total_number)
+            {
+                start_number = start_number + offset_number
+                               buff = buff # "," # start_number
+                                      i = i + 1
+            }
+            InsBufLine(hbuf, ln, buff)
+        }
+        else if (direct == 1)
+        {
+            InsBufLine(hbuf, ln, start_number)
+            i = 1
+                while (i < total_number)
+            {
+                start_number = start_number + offset_number
+                               InsBufLine(hbuf, ln + i, start_number)
+                               i = i + 1
+            }
+        }
+    }
+    else if ((wordinfo.szWord == "pr") || (wordinfo.szWord == "printf"))
+    {
+        var_1 = ask("变量")
+
+                DelBufLine(hbuf, ln)
+                if (var_1 == 1)
+        {
+            InsBufLine(hbuf, ln, "printf(\"[f] = %s,[L] = %d\\r\\n\",__func__,__LINE__);")
+        }
+        else if (var_1 == 2)
+        {
+
+        }
+        else
+        {
+            var_2 = ask("类型")
+                    InsBufLine(hbuf, ln, "my_printf(\"" #var_1# " = " #var_2# "\\r\\n\"," #var_1# ");")
+        }
+    }
+    else if ((wordinfo.szWord == "belife")
+{
+//      tmp_buf =GetBufLine (hbuf, ln - 1)
+//      belife_parse_param(tmp_buf)
+
+}
     if(language == 1)
     {
         ExpandProcEN(szMyName,wordinfo,szLine,szLine1,nVer,ln,sel)
@@ -504,7 +589,8 @@ macro ExpandProcCN(szMyName,wordinfo,szLine,szLine1,nVer,ln,sel)
         {
             Msg("右边空间太小,请用新的行")
             stop 
-        }        szCurLine = GetBufLine(hbuf, sel.lnFirst);
+        }
+	szCurLine = GetBufLine(hbuf, sel.lnFirst);
         szLeft = strmid(szCurLine,0,wordinfo.ichLim)
         lineLen = strlen(szCurLine)
         kk = 0
@@ -1538,7 +1624,7 @@ macro InsertFileHeaderEN(hbuf, ln,szName,szContent)
     GetFunctionList(hbuf,hnewbuf)
     InsBufLine(hbuf, ln + 0,  "/******************************************************************************")
     InsBufLine(hbuf, ln + 1,  "")
-    InsBufLine(hbuf, ln + 2,  "  Copyright (C), 2001-2011, DCN Co., Ltd.")
+    InsBufLine(hbuf, ln + 2,  "  Copyright (C), Deepblue Technology (Shanghai) Co.,Ltd")
     InsBufLine(hbuf, ln + 3,  "")
     InsBufLine(hbuf, ln + 4,  " ******************************************************************************")
     sz = GetFileName(GetBufName (hbuf))
@@ -1624,7 +1710,7 @@ macro InsertFileHeaderCN(hbuf, ln,szName,szContent)
     GetFunctionList(hbuf,hnewbuf)
     InsBufLine(hbuf, ln + 0,  "/******************************************************************************")
     InsBufLine(hbuf, ln + 1,  "")
-    InsBufLine(hbuf, ln + 2,  "                  版权所有 (C), 2001-2011, 神州数码网络有限公司")
+    InsBufLine(hbuf, ln + 2,  "                  Copyright (C), Deepblue Technology (Shanghai) Co.,Ltd")
     InsBufLine(hbuf, ln + 3,  "")
     InsBufLine(hbuf, ln + 4,  " ******************************************************************************")
     sz = GetFileName(GetBufName (hbuf))
